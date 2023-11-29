@@ -1,0 +1,29 @@
+---
+Description: Package tarball of autopkg with relocatable-python framework.
+Identifier: com.github.autopkg.AutoPkgLocal
+MinimumVersion: 2.4.0
+
+Input:
+  NAME: autopkg
+  PYTHON_VERSION: 3.10.9
+  PYTHON_OS_VERSION: "11"
+Process:
+  - Processor: Copier
+    Arguments:
+      source_path: "./dist/*.tar.gz"
+      destination_path: "%RECIPE_CACHE_DIR%/"
+
+  - Processor: FileFinder
+    Arguments:
+      pattern: "%RECIPE_CACHE_DIR%/*.tar.gz"
+
+  - Processor: FileCreator
+    Arguments:
+      file_path: "%RECIPE_CACHE_DIR%/requirements.txt"
+      file_content: "%found_filename%"
+
+  - Processor: GenerateRelocatablePython
+    Arguments:
+      requirements_path: "%RECIPE_CACHE_DIR%/requirements.txt"
+      python_version: "%PYTHON_VERSION%"
+      os_version: "%PYTHON_OS_VERSION%"
